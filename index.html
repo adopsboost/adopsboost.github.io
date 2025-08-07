@@ -1,0 +1,250 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AdOps Boost — Rebounder</title>
+  <meta name="description" content="AdOps Boost adds a smart optimization layer to publisher stacks. Prebid traffic shaping, dynamic floors, and viewability optimization. Join the pilot." />
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --bg-soft: #121318;
+      --surface: #151821;
+      --text: #e9eef5;
+      --muted: #a7b0c0;
+      --brand: #6ee7ff;
+      --brand-2: #8b5cf6;
+      --accent: #64d38b;
+      --card: #0f1117;
+      --border: #252a36;
+      --maxw: 1100px;
+      --radius: 14px;
+      --shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f7f8fb;
+        --bg-soft: #f0f2f7;
+        --surface: #ffffff;
+        --text: #101218;
+        --muted: #475066;
+        --brand: #2458ff;
+        --brand-2: #8b5cf6;
+        --accent: #0f9d58;
+        --card: #ffffff;
+        --border: #e6e8ef;
+        --shadow: 0 12px 24px rgba(16,18,24,.06);
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: radial-gradient(1200px 600px at 70% -10%, color-mix(in oklab, var(--brand) 25%, transparent) 0%, transparent 60%) ,
+                  radial-gradient(1200px 600px at -10% 20%, color-mix(in oklab, var(--brand-2) 20%, transparent) 0%, transparent 60%),
+                  var(--bg);
+      color: var(--text);
+      font: 400 16px/1.6 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    a { color: var(--brand); text-decoration: none; }
+    a:hover, a:focus-visible { text-decoration: underline; outline: none; }
+    .wrap { max-width: var(--maxw); margin: 0 auto; padding: 24px; }
+    header {
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(10px) saturate(120%);
+      background: color-mix(in oklab, var(--bg), transparent 35%);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav { display: flex; align-items: center; gap: 20px; justify-content: space-between; }
+    .brand {
+      font-weight: 800; letter-spacing: .2px; line-height: 1;
+      font-size: clamp(18px, 2vw, 22px);
+      background: linear-gradient(90deg, var(--brand), var(--brand-2));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      white-space: nowrap;
+    }
+    .nav .links { display: flex; gap: 16px; align-items: center; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 10px 14px; border-radius: 999px; border: 1px solid var(--border);
+      background: linear-gradient(180deg, color-mix(in oklab, var(--surface), white 4%), var(--surface));
+      color: var(--text); text-decoration: none; font-weight: 600;
+      box-shadow: var(--shadow);
+      transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(0,0,0,.2); border-color: color-mix(in oklab, var(--brand), var(--border) 70%); }
+    .btn.secondary { background: none; box-shadow: none; }
+    .hero { padding: 64px 0 30px; }
+    .hero h1 { margin: 0 0 8px; font-weight: 900; font-size: clamp(30px, 5.5vw, 54px); line-height: 1.05; letter-spacing: -0.5px; }
+    .hero p.lead { margin: 0; max-width: 70ch; color: var(--muted); font-size: clamp(16px, 2.6vw, 20px); }
+    .kicker { text-transform: uppercase; letter-spacing: .15em; font-size: 12px; color: var(--muted); }
+    .ribbon { display: inline-flex; align-items: center; gap: 10px; padding: 8px 12px; border: 1px solid var(--border);
+      background: color-mix(in oklab, var(--surface), transparent 8%); border-radius: 999px; font-size: 14px; color: var(--muted); margin-top: 22px;}
+    .section { padding: 40px 0; }
+    .section h2 { margin: 0 0 14px; font-size: clamp(22px, 3.2vw, 32px); line-height: 1.15; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 18px; }
+    .card { padding: 18px; border: 1px solid var(--border); border-radius: var(--radius); background: linear-gradient(180deg, color-mix(in oklab, var(--card), white 2%), var(--card)); box-shadow: var(--shadow); }
+    .card h3 { margin: 0 0 8px; font-size: 18px; letter-spacing: -0.2px; }
+    .card p { margin: 0; color: var(--muted); }
+    .grid-2 { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; }
+    @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
+    .list { display: grid; gap: 12px; margin: 14px 0 0; }
+    .list li { list-style: none; padding-left: 0; }
+    .tag { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--border); font-size: 12px; color: var(--muted);
+      background: color-mix(in oklab, var(--surface), transparent 10%); }
+    .divider { height: 1px; background: var(--border); margin: 16px 0 28px; opacity: .8; }
+    .faq details { border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; background: color-mix(in oklab, var(--surface), transparent 6%); }
+    .faq details + details { margin-top: 10px; }
+    .faq summary { cursor: pointer; font-weight: 600; }
+    .foot { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; padding: 20px 0 40px; color: var(--muted); font-size: 14px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#">AdOps Boost</a>
+      <nav class="links">
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="#founders">Founders</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact" class="btn">Early access</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="kicker">Optimization layer for publishers</div>
+      <h1>AdOps Boost: an optimization layer for publisher ad stacks</h1>
+      <p class="lead">Rebounder learns from every auction and shapes what happens next. Prebid traffic shaping, dynamic flooring, and viewability optimization.</p>
+      <div class="ribbon mono">By James Strang and Graeme Thompson · Made in Canada</div>
+      <div style="margin-top:22px; display:flex; gap:12px; flex-wrap:wrap;">
+        <a class="btn" href="#contact">Request early access</a>
+        <a class="btn secondary" href="#how">See how it works</a>
+      </div>
+    </section>
+
+    <section id="features" class="section">
+      <h2>Flagship features</h2>
+      <div class="cards">
+        <article class="card">
+          <h3>Prebid traffic shaping</h3>
+          <p>Adapt who you invite next based on the signals you just saw. Fewer wasted calls. Better competition.</p>
+        </article>
+        <article class="card">
+          <h3>Dynamic flooring</h3>
+          <p>Floors reflect recent clearing behavior by slot and context.  Designed to help bidders be more competitive in real time.</p>
+        </article>
+        <article class="card">
+          <h3>Viewability optimization</h3>
+          <p>Sequence and refresh with intent. Lift revenue by making ads more likely to be seen sooner.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="how" class="section">
+      <h2>How it works</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>1) Observe</h3>
+          <p>We read Prebid events and slot context. We track bid CPMs, bid rates, win rates, and more.</p>
+        </div>
+        <div class="card">
+          <h3>2) Decide</h3>
+          <p>We shape the next request. Which bidders to request, what floor to set, and how to time the requests.</p>
+        </div>
+        <div class="card">
+          <h3>3) Learn</h3>
+          <p>We run multivariate tests. We log outcomes to GAM and your analytics. We keep what wins.</p>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <p><strong>Why this matters:</strong> small, fast decisions compound over a session. You earn more without heavy migrations or lock-in.</p>
+      <ul class="list">
+        <li class="tag">Works with Prebid and Google Ad Manager</li>
+        <li class="tag">Client-side, low latency, small footprint</li>
+        <li class="tag">Export session and slot signals to analytics</li>
+        <li class="tag">Multivariate testing by design</li>
+        <li class="tag">Optimization by user, without user tracking.</li>
+      </ul>
+    </section>
+
+    <section id="why" class="section">
+      <h2>Why “Rebounder”</h2>
+      <p>In basketball, fewer than half of shots go in. Rebounds are how teams turn misses into points.</p>
+      <p>The web is similar. A page has many ad opportunities. Some are missed or underperform. Rebounder watches the play and adjusts in real time. If the last attempt was weak or off-target, we change the next one. The goal is simple. Fewer empty trips. More quality chances.</p>
+    </section>
+
+    <section id="founders" class="section">
+      <h2>Built by James Strang and Graeme Thompson</h2>
+      <p>We met in 2016 at a monetization company. Graeme brought deep software expertise and a passion for clean, elegant code. James came from web development with a drive to solve hard problems and push boundaries.</p>
+      <p>We learned to work well together. Teacher and student, switching roles as needed. After that company, Graeme led software teams outside ad tech for a time. James stayed in ad tech and helped young companies grow, then moved into full-time consulting on technical problems.</p>
+      <p>Over time James saw the same pattern. Publishers were asked to fund the free web with less budget and more constraints. Industry changes made long-term bets hard. So he sketched a plan to automate the best optimization tactics he had learned. The task was bigger than one person. He called Graeme. Two months later they were testing with real publishers.</p>
+    </section>
+
+    <section id="mission" class="section">
+      <h2>Our mission</h2>
+      <p>We want to help publishers fund free, high-quality information on the open web. Free access to knowledge reduces barriers for everyone. If publishers cannot earn with ads, free content turns into ads in disguise. We're here to provide a boost to that value exchange.</p>
+    </section>
+
+    <section id="who" class="section">
+      <h2>Who it’s for</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>Independent publishers</h3>
+          <p>Lift revenue with the stack you already run. Keep control and keep your data.</p>
+        </div>
+        <div class="card">
+          <h3>Monetization services</h3>
+          <p>Add a research-grade optimization layer to your fleet. Test safely. Roll out what works.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="faq" class="section faq">
+      <h2>FAQ</h2>
+      <details>
+        <summary>Does this replace my wrapper?</summary>
+        <p>No. Rebounder sits alongside your stack and guides it.</p>
+      </details>
+      <details>
+        <summary>Will it slow my site?</summary>
+        <p>No.  Rebounder's script is loaded asynchronously and designed in a way where it won't slow down page load or ad load.</p>
+      </details>
+      <details>
+        <summary>What data do you use?</summary>
+        <p>Signals you already have such as Prebid events, slot context, header bidder behavior, and page metadata.</p>
+      </details>
+      <details>
+        <summary>How do you measure success?</summary>
+        <p>Our primary metric is Revenue, and we add targeting to Google Ad Manager to help us measure this using split testing.  We track some other metrics internally such as bid rates, viewability, and speed for fine tuning.</p>
+      </details>
+      <details>
+        <summary>What is the integration effort?</summary>
+        <p>Add a script to the page, provide reporting access to GAM, and set up a few key values.  That's it.</p>
+      </details>
+    </section>
+
+    <section id="contact" class="section">
+      <h2>Join the pilot</h2>
+      <p>We are onboarding a small group of partners. You will shape the roadmap and work directly with the founders. If you run Prebid and GAM today, we can likely integrate with minimal lift.</p>
+      <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:10px;">
+        <a class="btn" href="mailto:hello@js.consulting?subject=AdOps%20Boost%20Pilot&body=Hi%20James%20and%20Graeme%2C%0A%0AWe%27d%20like%20to%20learn%20more%20about%20AdOps%20Boost.%20">Request early access</a>
+        <a class="btn secondary" href="https://js.consulting" target="_blank" rel="noopener">Learn about JS Consulting</a>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <div>© <span id="y"></span> AdOps Boost · No tracking cookies. No user IDs. Just signals and math.</div>
+      <div class="mono">Made in Canada</div>
+    </footer>
+  </main>
+
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+</body>
+</html>
