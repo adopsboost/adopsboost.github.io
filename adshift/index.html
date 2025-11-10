@@ -103,6 +103,16 @@
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
   </style>
   <script src="https://rebounder.adopsboost.com/adopsboost.com/start_rebounder.js"></script>
+  <script>
+    window.rebounder = window.rebounder || {};
+    window.rebounder.adshift = [{
+      adSelector: ".ad_placement",
+      containerSelector: ".content",
+      bufferPixels: 200,
+      maxAdElements: 4,
+      minHeight: 340
+    }];
+  </script>
   <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js" crossorigin="anonymous"></script>
 </head>
 <body>
