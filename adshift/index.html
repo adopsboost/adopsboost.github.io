@@ -1,0 +1,185 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AdShift demo</title>
+  <meta name="description" content="AdOps Boost adds a smart optimization layer to publisher stacks. Prebid traffic shaping, dynamic floors, viewability optimization, and more. Join the pilot." />
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --bg-soft: #121318;
+      --surface: #151821;
+      --text: #e9eef5;
+      --muted: #a7b0c0;
+      --brand: #6ee7ff;
+      --brand-2: #8b5cf6;
+      --accent: #64d38b;
+      --card: #0f1117;
+      --border: #252a36;
+      --maxw: 1100px;
+      --radius: 14px;
+      --shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f7f8fb;
+        --bg-soft: #f0f2f7;
+        --surface: #ffffff;
+        --text: #101218;
+        --muted: #475066;
+        --brand: #2458ff;
+        --brand-2: #8b5cf6;
+        --accent: #0f9d58;
+        --card: #ffffff;
+        --border: #e6e8ef;
+        --shadow: 0 12px 24px rgba(16,18,24,.06);
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: radial-gradient(1200px 600px at 70% -10%, color-mix(in oklab, var(--brand) 25%, transparent) 0%, transparent 60%) ,
+                  radial-gradient(1200px 600px at -10% 20%, color-mix(in oklab, var(--brand-2) 20%, transparent) 0%, transparent 60%),
+                  var(--bg);
+      color: var(--text);
+      font: 400 16px/1.6 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    a { color: var(--brand); text-decoration: none; }
+    a:hover, a:focus-visible { text-decoration: underline; outline: none; }
+    .wrap { max-width: var(--maxw); margin: 0 auto; padding: 24px; }
+    header {
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(10px) saturate(120%);
+      background: color-mix(in oklab, var(--bg), transparent 35%);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav { display: flex; align-items: center; gap: 20px; justify-content: space-between; }
+    .brand {
+      font-weight: 800; letter-spacing: .2px; line-height: 1;
+      font-size: clamp(18px, 2vw, 22px);
+      background: linear-gradient(90deg, var(--brand), var(--brand-2));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      white-space: nowrap;
+    }
+    .nav .links { display: flex; gap: 16px; align-items: center; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 10px 14px; border-radius: 999px; border: 1px solid var(--border);
+      background: linear-gradient(180deg, color-mix(in oklab, var(--surface), white 4%), var(--surface));
+      color: var(--text); text-decoration: none; font-weight: 600;
+      box-shadow: var(--shadow);
+      transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(0,0,0,.2); border-color: color-mix(in oklab, var(--brand), var(--border) 70%); }
+    .btn.secondary { background: none; box-shadow: none; }
+    .hero { padding: 64px 0 30px; }
+    .hero h1 { margin: 0 0 8px; font-weight: 900; font-size: clamp(30px, 5.5vw, 54px); line-height: 1.05; letter-spacing: -0.5px; }
+    .hero p.lead { margin: 0; max-width: 70ch; color: var(--muted); font-size: clamp(16px, 2.6vw, 20px); }
+    .kicker { text-transform: uppercase; letter-spacing: .15em; font-size: 12px; color: var(--muted); }
+    .ribbon { display: inline-flex; align-items: center; gap: 10px; padding: 8px 12px; border: 1px solid var(--border);
+      background: color-mix(in oklab, var(--surface), transparent 8%); border-radius: 999px; font-size: 14px; color: var(--muted); margin-top: 22px;}
+    .section { padding: 40px 0; }
+    .section h2 { margin: 0 0 14px; font-size: clamp(22px, 3.2vw, 32px); line-height: 1.15; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 18px; }
+    .card { padding: 18px; border: 1px solid var(--border); border-radius: var(--radius); background: linear-gradient(180deg, color-mix(in oklab, var(--card), white 2%), var(--card)); box-shadow: var(--shadow); }
+    .card h3 { margin: 0 0 8px; font-size: 18px; letter-spacing: -0.2px; }
+    .card p { margin: 0; color: var(--muted); }
+    .grid-2 { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; }
+    @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
+    .list { display: grid; gap: 12px; margin: 14px 0 0; }
+    .list li { list-style: none; }
+    .tag { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--border); font-size: 12px; color: var(--muted);
+      background: color-mix(in oklab, var(--surface), transparent 10%); }
+    .divider { height: 1px; background: var(--border); margin: 16px 0 28px; opacity: .8; }
+    .faq details { border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; background: color-mix(in oklab, var(--surface), transparent 6%); }
+    .faq details + details { margin-top: 10px; }
+    .faq summary { cursor: pointer; font-weight: 600; }
+    .foot { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; padding: 20px 0 40px; color: var(--muted); font-size: 14px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+  </style>
+  <script src="https://rebounder.adopsboost.com/adopsboost.com/start_rebounder.js"></script>
+  <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#">Rebounder AdShift</a>
+    </div>
+  </header>
+
+  <main class="wrap content">
+    <section class="hero">
+      <h1>AdShift: Improve your ad visibility</h1>
+      <p class="lead">AdShift moves ad units around in long content to improve the viewability of the ad units</p>
+    </section>
+
+</main>
+</body>
+  <script>
+    function insertLorumIpsum(index) {
+        const contentElement = document.querySelectorAll('.content');
+        const newSection = document.createElement('section');
+        newSection.className = 'section';
+        newSection.innerHTML = `
+          <h2>Content section ${index}</h2>
+          <div>
+              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+          </div>
+          <div>
+              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+          </div>
+          <div>
+              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+          </div>
+          <div>
+              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+          </div>
+          <div>
+              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+          </div>
+          <div>
+              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+          </div>
+          <div>
+              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+          </div>
+          <div>
+              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+          </div>
+      `
+      contentElement[0].appendChild(newSection);
+    }
+    function insertAdPlacement(index) {
+        const contentElement = document.querySelectorAll('.content');
+        const adSection = document.createElement('section');
+        adSection.className = 'ad_placement';
+        adSection.innerHTML = `
+            <p>This is ad unit ${index}</p>
+            <div id='ad-div-${index}'>
+            </div>
+        `;
+
+        contentElement[0].appendChild(adSection);
+        attachGoogleTag(index)
+    }
+
+    function attachGoogleTag(index) {
+        window.googletag = window.googletag || {cmd: []};
+        googletag.cmd.push(function() {
+            googletag.defineSlot('/22304985199/adshift', [300, 250], `ad-div-${index}`).addService(googletag.pubads()).setTargeting('tst', ['adshift']);
+            googletag.enableServices();
+            googletag.display(`ad-div-${index}`);
+        });
+    }
+
+    for (let i = 1; i <= 10; i++) {
+        insertLorumIpsum(i);
+        insertAdPlacement(i);
+    }
+  </script>
+</html>
