@@ -1,0 +1,515 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AdShift demo</title>
+  <meta name="description" content="AdOps Boost adds a smart optimization layer to publisher stacks. Prebid traffic shaping, dynamic floors, viewability optimization, and more. Join the pilot." />
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --bg-soft: #121318;
+      --surface: #151821;
+      --text: #e9eef5;
+      --muted: #a7b0c0;
+      --brand: #6ee7ff;
+      --brand-2: #8b5cf6;
+      --accent: #64d38b;
+      --card: #0f1117;
+      --border: #252a36;
+      --maxw: 1100px;
+      --radius: 14px;
+      --shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f7f8fb;
+        --bg-soft: #f0f2f7;
+        --surface: #ffffff;
+        --text: #101218;
+        --muted: #475066;
+        --brand: #2458ff;
+        --brand-2: #8b5cf6;
+        --accent: #0f9d58;
+        --card: #ffffff;
+        --border: #e6e8ef;
+        --shadow: 0 12px 24px rgba(16,18,24,.06);
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: radial-gradient(1200px 600px at 70% -10%, color-mix(in oklab, var(--brand) 25%, transparent) 0%, transparent 60%) ,
+                  radial-gradient(1200px 600px at -10% 20%, color-mix(in oklab, var(--brand-2) 20%, transparent) 0%, transparent 60%),
+                  var(--bg);
+      color: var(--text);
+      font: 400 16px/1.6 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      background-attachment: fixed;
+    }
+    a { color: var(--brand); text-decoration: none; }
+    a:hover, a:focus-visible { text-decoration: underline; outline: none; }
+    .wrap { max-width: var(--maxw); margin: 0 auto; padding: 24px; }
+    header {
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(10px) saturate(120%);
+      background: color-mix(in oklab, var(--bg), transparent 35%);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav { display: flex; align-items: center; gap: 20px; justify-content: space-between; }
+    .brand {
+      font-weight: 800; letter-spacing: .2px; line-height: 1;
+      font-size: clamp(18px, 2vw, 22px);
+      background: linear-gradient(90deg, var(--brand), var(--brand-2));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      white-space: nowrap;
+    }
+    .nav .links { display: flex; gap: 16px; align-items: center; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 10px 14px; border-radius: 999px; border: 1px solid var(--border);
+      background: linear-gradient(180deg, color-mix(in oklab, var(--surface), white 4%), var(--surface));
+      color: var(--text); text-decoration: none; font-weight: 600;
+      box-shadow: var(--shadow);
+      transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(0,0,0,.2); border-color: color-mix(in oklab, var(--brand), var(--border) 70%); }
+    .btn.secondary { background: none; box-shadow: none; }
+    .hero { padding: 64px 0 30px; }
+    .hero h1 { margin: 0 0 8px; font-weight: 900; font-size: clamp(30px, 5.5vw, 54px); line-height: 1.05; letter-spacing: -0.5px; }
+    .hero p.lead { margin: 0; max-width: 70ch; color: var(--muted); font-size: clamp(16px, 2.6vw, 20px); }
+    .kicker { text-transform: uppercase; letter-spacing: .15em; font-size: 12px; color: var(--muted); }
+    .ribbon { display: inline-flex; align-items: center; gap: 10px; padding: 8px 12px; border: 1px solid var(--border);
+      background: color-mix(in oklab, var(--surface), transparent 8%); border-radius: 999px; font-size: 14px; color: var(--muted); margin-top: 22px;}
+    .section { padding: 40px 0; }
+    .section h2 { margin: 0 0 14px; font-size: clamp(22px, 3.2vw, 32px); line-height: 1.15; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 18px; }
+    .card { padding: 18px; border: 1px solid var(--border); border-radius: var(--radius); background: linear-gradient(180deg, color-mix(in oklab, var(--card), white 2%), var(--card)); box-shadow: var(--shadow); }
+    .card h3 { margin: 0 0 8px; font-size: 18px; letter-spacing: -0.2px; }
+    .card p { margin: 0; color: var(--muted); }
+    .grid-2 { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; }
+    @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
+    .list { display: grid; gap: 12px; margin: 14px 0 0; }
+    .list li { list-style: none; }
+    .tag { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--border); font-size: 12px; color: var(--muted);
+      background: color-mix(in oklab, var(--surface), transparent 10%); }
+    .divider { height: 1px; background: var(--border); margin: 16px 0 28px; opacity: .8; }
+    .faq details { border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; background: color-mix(in oklab, var(--surface), transparent 6%); }
+    .faq details + details { margin-top: 10px; }
+    .faq summary { cursor: pointer; font-weight: 600; }
+    .foot { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; padding: 20px 0 40px; color: var(--muted); font-size: 14px; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .ad_placement {min-height:310px;}
+  </style>
+  <script src="https://rebounder.adopsboost.com/adopsboost.com/start_rebounder.js"></script>
+  <script>
+    window.rebounder = window.rebounder || {};
+    window.pbjs = window.pbjs || {
+      onEvent: function() {},
+      requestBids: function() {}
+    };
+  </script>
+  <script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js" crossorigin="anonymous"></script>
+  <script> 
+window.googletag = window.googletag || { cmd: [] };
+
+googletag.cmd.push(() => {
+  // Configure page-level settings.
+  googletag.setConfig({
+    disableInitialLoad: true,
+    lazyLoad: { fetchMarginPercent: 150, renderMarginPercent: 50 },
+    singleRequest: true,
+    targeting: { tst: "adshift" },
+  });
+
+  googletag.enableServices();
+}); 
+</script>
+  
+<script>
+/*! GPT Viewable Refresh Demo — v1.2 (uses googletag.cmd for all GPT calls) */
+(() => {
+  const LS_KEY = 'gptRefreshDemoSettings_v12';
+  const defaultSettings = { maxSinceLoadSec: 30, minCumulativeViewSec: 10 };
+
+  const state = {
+    settings: loadSettings(),
+    slots: new Map(), // id -> { slot, el, loadedAtMs, cumulativeViewMs, _visible, _lastVisibleTs }
+    totals: { impressions: 0, viewableImpressions: 0 },
+    timers: { tick: null, recountSlots: null, passiveSlots: null },
+    io: null,
+    started: false,
+    ui: null
+  };
+
+  function loadSettings() {
+    try { return { ...defaultSettings, ...JSON.parse(localStorage.getItem(LS_KEY) || '{}') }; }
+    catch { return { ...defaultSettings }; }
+  }
+  function saveSettings(){ localStorage.setItem(LS_KEY, JSON.stringify(state.settings)); }
+
+  // ---------------- UI ----------------
+  function createPanel() {
+    const css = `
+      .gpt-refresh-demo{position:fixed;right:16px;bottom:16px;z-index:999999;font:12px/1.3 system-ui,sans-serif;color:#fff;background:#222;border:1px solid #444;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.35);min-width:270px;max-width:320px}
+      .gpt-r-h{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid #333;background:#111;cursor:move}
+      .gpt-r-h b{font-size:12px;letter-spacing:.3px}
+      .gpt-r-b{padding:10px 12px}
+      .gpt-r-grid{display:grid;grid-template-columns:1fr 90px;gap:6px 8px;margin-bottom:10px}
+      .gpt-r-grid label{opacity:.85}
+      .gpt-r-grid input{width:100%;box-sizing:border-box;padding:6px 7px;border-radius:7px;border:1px solid #444;background:#111;color:#eee}
+      .gpt-r-btnrow{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+      .gpt-r-btn{flex:1;padding:7px 8px;border-radius:8px;border:1px solid #444;background:#2a2a2a;color:#eee;cursor:pointer}
+      .gpt-r-btn:hover{background:#333}
+      .gpt-r-stats{display:grid;grid-template-columns:1fr auto;gap:6px 8px}
+      .gpt-r-tag{opacity:.75}
+      .gpt-r-pill{padding:2px 8px;border:1px solid #444;border-radius:999px;background:#111}
+      .gpt-r-small{font-size:11px}
+    `;
+    const style = document.createElement('style'); style.textContent = css; document.head.appendChild(style);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'gpt-refresh-demo';
+    wrap.innerHTML = `
+      <div class="gpt-r-h"><b>GPT Viewable Refresh</b><span class="gpt-r-small">demo</span></div>
+      <div class="gpt-r-b">
+        <div class="gpt-r-grid">
+          <label for="gpt-maxSince">Seconds since load</label>
+          <input id="gpt-maxSince" type="number" min="1" step="1" />
+          <label for="gpt-minView">Min cumulative in-view (s)</label>
+          <input id="gpt-minView" type="number" min="1" step="1" />
+        </div>
+        <div class="gpt-r-btnrow">
+          <button id="gpt-startStop" class="gpt-r-btn">Start</button>
+          <button id="gpt-refreshAll" class="gpt-r-btn">Refresh all</button>
+          <button id="gpt-reset" class="gpt-r-btn">Reset stats</button>
+        </div>
+        <div class="gpt-r-stats">
+          <div class="gpt-r-tag">Ad slots</div><div id="gpt-st-slots" class="gpt-r-pill">0</div>
+          <div class="gpt-r-tag">Total impressions</div><div id="gpt-st-imps" class="gpt-r-pill">0</div>
+          <div class="gpt-r-tag">Viewable impressions</div><div id="gpt-st-vimps" class="gpt-r-pill">0</div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(wrap);
+
+    // inputs
+    const iSince = wrap.querySelector('#gpt-maxSince');
+    const iView  = wrap.querySelector('#gpt-minView');
+    iSince.value = state.settings.maxSinceLoadSec;
+    iView.value  = state.settings.minCumulativeViewSec;
+    const persist = () => {
+      state.settings.maxSinceLoadSec = Math.max(1, Number(iSince.value || defaultSettings.maxSinceLoadSec));
+      state.settings.minCumulativeViewSec = Math.max(1, Number(iView.value || defaultSettings.minCumulativeViewSec));
+      saveSettings();
+    };
+    iSince.addEventListener('change', persist);
+    iView.addEventListener('change', persist);
+
+    // buttons
+    const startStop  = wrap.querySelector('#gpt-startStop');
+    const refreshAll = wrap.querySelector('#gpt-refreshAll');
+    const resetBtn   = wrap.querySelector('#gpt-reset');
+
+    startStop.addEventListener('click', () => state.started ? stop() : start());
+    refreshAll.addEventListener('click', manualRefreshAll);
+    resetBtn.addEventListener('click', resetStats);
+
+    // drag
+    const header = wrap.querySelector('.gpt-r-h');
+    let drag = {active:false,x:0,y:0,left:0,top:0};
+    header.addEventListener('mousedown', e => {
+      drag.active=true; drag.x=e.clientX; drag.y=e.clientY;
+      const r=wrap.getBoundingClientRect(); drag.left=r.left; drag.top=r.top; e.preventDefault();
+    });
+    window.addEventListener('mousemove', e => {
+      if(!drag.active) return;
+      const dx=e.clientX-drag.x, dy=e.clientY-drag.y;
+      wrap.style.left=Math.max(0,drag.left+dx)+'px';
+      wrap.style.top =Math.max(0,drag.top +dy)+'px';
+      wrap.style.bottom='auto';
+    });
+    window.addEventListener('mouseup', ()=> drag.active=false);
+
+    state.ui = {
+      setSlots(n){ wrap.querySelector('#gpt-st-slots').textContent = String(n); },
+      setImps(n){ wrap.querySelector('#gpt-st-imps').textContent = String(n); },
+      setVImps(n){ wrap.querySelector('#gpt-st-vimps').textContent = String(n); },
+      setRunning(r){ startStop.textContent = r ? 'Stop' : 'Start'; }
+    };
+  }
+
+  // --------------- GPT bindings (ALL via googletag.cmd) ---------------
+  function bindStatsAndPassiveSlotCount() {
+    googletag.cmd.push(() => {
+      const pubads = googletag.pubads();
+
+      // Known slots right now
+      passiveUpdateSlotsInternal();
+
+      pubads.addEventListener('slotRenderEnded', (e) => {
+        const s = getOrCreateSlotState(e.slot, /*observe*/ false);
+        s.loadedAtMs = performance.now();
+        s.cumulativeViewMs = 0;
+        state.totals.impressions++;
+        updateUi();
+      });
+
+      pubads.addEventListener('impressionViewable', () => {
+        state.totals.viewableImpressions++;
+        updateUi();
+      });
+
+      // Keep slot count fresh even if not started
+      if (state.timers.passiveSlots) clearInterval(state.timers.passiveSlots);
+      state.timers.passiveSlots = setInterval(() => {
+        googletag.cmd.push(() => {
+          passiveUpdateSlotsInternal();
+          updateUi();
+        });
+      }, 1500);
+    });
+  }
+
+  function passiveUpdateSlotsInternal(){
+    const slots = googletag.pubads().getSlots();
+    for (const slot of slots) getOrCreateSlotState(slot, /*observe*/ false);
+    state.ui && state.ui.setSlots(state.slots.size);
+  }
+
+  function initObservers(){
+    if (state.io) return;
+    state.io = new IntersectionObserver(handleIntersect, { threshold: [0, 0.5, 1] });
+  }
+
+  function handleIntersect(entries){
+    const now = performance.now();
+    for (const entry of entries) {
+      const id = entry.target.getAttribute('id');
+      const s = state.slots.get(id);
+      if (!s) continue;
+      const visible = (entry.intersectionRatio || 0) >= 0.5;
+      if (visible && !s._visible) {
+        s._visible = true; s._lastVisibleTs = now;
+      } else if (!visible && s._visible) {
+        if (s._lastVisibleTs) s.cumulativeViewMs += Math.max(0, now - s._lastVisibleTs);
+        s._visible = false; s._lastVisibleTs = 0;
+      }
+    }
+  }
+
+  function getOrCreateSlotState(slot, observe = true){
+    const id = slot.getSlotElementId();
+    if (state.slots.has(id)) return state.slots.get(id);
+    const el = document.getElementById(id);
+    const rec = { id, slot, el, loadedAtMs: performance.now(), cumulativeViewMs: 0, _visible: false, _lastVisibleTs: 0 };
+    state.slots.set(id, rec);
+    if (observe && el && state.io) state.io.observe(el);
+    return rec;
+  }
+
+  function refreshIfEligible(s, now){
+    const sinceLoadSec = (now - s.loadedAtMs) / 1000;
+    const cumViewSec = (s.cumulativeViewMs + (s._visible && s._lastVisibleTs ? (now - s._lastVisibleTs) : 0)) / 1000;
+    if (sinceLoadSec >= state.settings.maxSinceLoadSec && cumViewSec >= state.settings.minCumulativeViewSec) {
+      googletag.pubads().refresh([s.slot]);
+      // optimistic UI reset (slotRenderEnded will finalize)
+      s.cumulativeViewMs = 0;
+      s._lastVisibleTs = s._visible ? now : 0;
+      s.loadedAtMs = now;
+    }
+  }
+
+  function tick(){
+    const now = performance.now();
+    // ensure current GPT slots are tracked and observed
+    googletag.cmd.push(() => {
+      const slots = googletag.pubads().getSlots();
+      for (const slot of slots) {
+        const s = getOrCreateSlotState(slot);
+        if (s.el && state.io) state.io.observe(s.el);
+      }
+      for (const s of state.slots.values()) refreshIfEligible(s, now);
+      state.ui.setSlots(state.slots.size);
+    });
+  }
+
+  function manualRefreshAll(){
+    googletag.cmd.push(() => {
+      const slots = googletag.pubads().getSlots();
+      if (slots.length) googletag.pubads().refresh(slots);
+    });
+  }
+
+  function resetStats(){
+    for (const s of state.slots.values()) {
+      s.cumulativeViewMs = 0;
+      s.loadedAtMs = performance.now();
+      s._lastVisibleTs = s._visible ? performance.now() : 0;
+    }
+    state.totals.impressions = 0;
+    state.totals.viewableImpressions = 0;
+    updateUi();
+  }
+
+  function updateUi(){
+    if (!state.ui) return;
+    state.ui.setImps(state.totals.impressions);
+    state.ui.setVImps(state.totals.viewableImpressions);
+    state.ui.setSlots(state.slots.size);
+  }
+
+  function start(){
+    if (state.started) return;
+    state.started = true;
+    state.ui.setRunning(true);
+
+    initObservers();
+
+    // seed observers and start loops all inside cmd
+    googletag.cmd.push(() => {
+      googletag.pubads().getSlots().forEach(slot => {
+        const s = getOrCreateSlotState(slot);
+        if (s.el) state.io.observe(s.el);
+      });
+
+      if (state.timers.tick) clearInterval(state.timers.tick);
+      state.timers.tick = setInterval(tick, 250);
+
+      if (state.timers.recountSlots) clearInterval(state.timers.recountSlots);
+      state.timers.recountSlots = setInterval(() => {
+        googletag.cmd.push(() => {
+          for (const s of state.slots.values()) {
+            if (!s.el) {
+              s.el = document.getElementById(s.id);
+              if (s.el) state.io.observe(s.el);
+            }
+          }
+        });
+      }, 1500);
+    });
+  }
+
+  function stop(){
+    state.started = false;
+    state.ui.setRunning(false);
+    if (state.timers.tick) clearInterval(state.timers.tick);
+    if (state.timers.recountSlots) clearInterval(state.timers.recountSlots);
+    state.timers.tick = null; state.timers.recountSlots = null;
+  }
+
+  // Boot UI and bind stats immediately
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      createPanel();
+      bindStatsAndPassiveSlotCount(); // stats active even before Start
+      // initialize UI counts ASAP
+      googletag.cmd.push(() => { passiveUpdateSlotsInternal(); updateUi(); });
+    });
+  } else {
+    createPanel();
+    bindStatsAndPassiveSlotCount();
+    googletag.cmd.push(() => { passiveUpdateSlotsInternal(); updateUi(); });
+  }
+
+  // Debug hook
+  window.GPTRefreshDemo = { start, stop, resetStats, manualRefreshAll, getState: () => state };
+})();
+</script>
+
+
+
+  
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#">Rebounder AdShift Off</a>
+    </div>
+  </header>
+
+  <main class="wrap content">
+    <section class="hero">
+      <h1>AdShift: Improve your ad visibility</h1>
+      <p class="lead">AdShift moves ad units around in long-form content to improve the viewability of ad units, reduce on page load, and accomodate for all types of scroll behavior dynamically.</p>
+    </section>
+
+</main>
+
+  <script>
+    function insertLorumIpsum(index) {
+        const contentElement = document.querySelectorAll('.content');
+        const newSection = document.createElement('section');
+        newSection.className = 'section';
+        newSection.innerHTML = `
+          <h2>Content section ${index}</h2>
+          <div>
+              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+          </div>
+          <div>
+              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+          </div>
+          <div>
+              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+          </div>
+          <div>
+              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+          </div>
+          <div>
+              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+          </div>
+          <div>
+              Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+          </div>
+      `
+      contentElement[0].appendChild(newSection);
+    }
+    function insertAdPlacement(index) {
+        const contentElement = document.querySelectorAll('.content');
+        const adSection = document.createElement('section');
+        adSection.className = 'ad_placement';
+        adSection.innerHTML = `
+            <p>This is ad unit ${index}</p>
+            <div id='ad-div-${index}'>
+            </div>
+        `;
+
+        contentElement[0].appendChild(adSection);
+        attachGoogleTag(index)
+    }
+
+    function attachGoogleTag(index) {
+        if (window.rebounder && window.rebounder.adshift && window.rebounder.adshift[0] && index > window.rebounder.adshift[0].maxAdElements) {return}
+        googletag.cmd.push(function() {
+            googletag.defineSlot('/22304985199/adshift', [300, 250], `ad-div-${index}`).addService(googletag.pubads());
+            googletag.display(`ad-div-${index}`);
+        });
+    }
+
+    for (let i = 1; i <= 10; i++) {
+        insertLorumIpsum(i);
+        insertAdPlacement(i);
+    }
+  </script>
+            <div>
+              This is the end of the generated content.
+          </div>
+          <div>
+              This is the end of the generated content.
+          </div>
+          <div>
+              This is the end of the generated content.
+          </div>
+
+  <script>
+  googletag.cmd.push(() => {
+    googletag.pubads().refresh(); 
+  });
+  </script>
+  
+  <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4a837dee5d7c492ca012e8bb9b5e5b69","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>

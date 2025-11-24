@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Comparing AdShift</title>
+    <style>
+        html, body {
+            margin: 0;
+            height: 100%;
+        }
+
+        /* This invisible div gives the parent page scroll height */
+        #scroll-proxy {
+            width: 1px;
+            height: 100vh; /* will be updated by JS */
+        }
+
+        /* Fixed container: 2 columns of iframes */
+        .frames-container {
+            position: fixed;
+            inset: 0;           /* top:0; right:0; bottom:0; left:0 */
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;   /* hide any internal overflow */
+        }
+
+        .frames-container iframe {
+            flex: 1 1 50%;
+            border: 0;
+            height: 100%;
+            display: block;
+        }
+    </style>
+
+</head>
+<body>
+    <!-- Parent scroll area: the only visible scrollbar belongs to this page -->
+    <div id="scroll-proxy"></div>
+    
+
+    <!-- Two fixed iframes, side by side, filling the viewport -->
+    <div class="frames-container">
+        <iframe id="left-frame" src="adshift-off.html" title="Left"></iframe>
+        <iframe id="right-frame" src="adshift-on.html" title="Right"></iframe>
+    </div>
+
+    <script>
+        (function () {
+            const proxy = document.getElementById('scroll-proxy');
+            const frames = [
+                document.getElementById('left-frame'),
+                document.getElementById('right-frame')
+            ];
+
+            const docHeights = [0, 0];   // content heights
+            let maxDocHeight = 0;
+
+            function getDocHeight(doc) {
+                if (!doc) return 0;
+                const body = doc.body;
+                const html = doc.documentElement;
+
+                return Math.max(
+                    body ? body.scrollHeight : 0,
+                    body ? body.offsetHeight : 0,
+                    html ? html.clientHeight : 0,
+                    html ? html.scrollHeight : 0,
+                    html ? html.offsetHeight : 0
+                );
+            }
+
+            function updateHeights() {
+                try {
+                    frames.forEach((frame, i) => {
+                        const doc = frame.contentDocument || frame.contentWindow.document;
+                        docHeights[i] = getDocHeight(doc);
+                    });
+
+                    maxDocHeight = Math.max(docHeights[0], docHeights[1], window.innerHeight);
+
+                    // Parent scroll height = tallest iframe content
+                    proxy.style.height = maxDocHeight + 'px';
+
+                    syncScroll();
+                } catch (e) {
+                    console.warn('Unable to read iframe heights (cross-origin?)', e);
+                }
+            }
+
+            function syncScroll() {
+                if (!maxDocHeight) return;
+
+                const parentScrollable = Math.max(proxy.offsetHeight - window.innerHeight, 1);
+                const ratio = (window.scrollY || window.pageYOffset || 0) / parentScrollable;
+
+                frames.forEach((frame, i) => {
+                    try {
+                        const doc = frame.contentDocument || frame.contentWindow.document;
+                        const contentHeight = docHeights[i] || getDocHeight(doc);
+
+                        const frameScrollable = Math.max(contentHeight - window.innerHeight, 0);
+                        const targetY = ratio * frameScrollable;
+
+                        frame.contentWindow.scrollTo(0, targetY);
+                    } catch (e) {
+                        console.warn('Unable to sync iframe scroll (cross-origin?)', e);
+                    }
+                });
+            }
+
+            // Scroll + resize listeners on parent
+            window.addEventListener('scroll', syncScroll);
+            window.addEventListener('resize', updateHeights);
+
+            // Update heights whenever iframes load
+            frames.forEach(frame => {
+                frame.addEventListener('load', updateHeights);
+            });
+        })();
+    </script>
+</body>
+</html>

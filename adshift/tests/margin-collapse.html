@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Margin Collapse + Block/Flex Toggle Demo</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: system-ui, sans-serif;
+      line-height: 1.4;
+      background: #111;
+      color: #eee;
+    }
+
+    h1, h2 {
+      margin: 0 0 0.5em;
+    }
+
+    p {
+      margin: 0 0 1em;
+    }
+
+    .info {
+      margin-bottom: 1.5em;
+      padding: 10px;
+      border-radius: 4px;
+      background: #222;
+    }
+
+    .label {
+      font-weight: bold;
+      color: #9cf;
+    }
+
+    /* This is the container we will toggle (block <-> flex) via inline styles */
+    .toggle-target {
+      border: 3px solid #4ea9ff;
+      padding: 10px;
+      margin: 30px 0;
+      background: #181818;
+      /* initial layout: block formatting context */
+      display: block;
+    }
+
+    /* When in flex mode, we’ll still stack children vertically */
+    .toggle-target.flex-helper {
+      /* This class is just to set flex-direction; display is from inline style */
+      flex-direction: column;
+      gap: 0; /* margins will still be visible */
+    }
+
+    /* Sibling margin collapse demo */
+    .sibling-demo-box {
+      margin: 40px 0; /* large vertical margins to show collapse */
+      padding: 10px;
+      border: 2px solid #ffb347;
+      background: rgba(255, 179, 71, 0.08);
+    }
+
+    .sibling-demo-box:nth-child(1) {
+      background: rgba(255, 179, 71, 0.18);
+    }
+
+    .sibling-demo-box:nth-child(2) {
+      background: rgba(255, 179, 71, 0.28);
+    }
+
+    /* Nested list margin collapse demo */
+    .list-wrapper {
+      margin-top: 40px;
+      border: 2px dashed #7fffd4;
+      padding: 10px 10px 10px 30px;
+      background: rgba(127, 255, 212, 0.06);
+    }
+
+    .outer-list {
+      margin: 30px 0;        /* may collapse with children */
+      padding-left: 20px;
+      border-left: 3px solid #7fffd4;
+    }
+
+    .outer-list > li {
+      margin: 20px 0;        /* top/bottom margins can collapse with children */
+      padding: 6px;
+      background: rgba(127, 255, 212, 0.12);
+      position: relative;
+    }
+
+    .outer-list > li::before {
+      content: "•";
+      position: absolute;
+      left: -15px;
+      color: #7fffd4;
+    }
+
+    .inner-list {
+      margin-top: 20px;      /* demonstrates collapse with parent li’s bottom margin */
+      margin-bottom: 20px;
+      padding-left: 20px;
+      border-left: 2px dotted #7fffd4;
+      background: rgba(127, 255, 212, 0.1);
+    }
+
+    .inner-list > li {
+      margin: 15px 0;
+      padding: 4px;
+      background: rgba(127, 255, 212, 0.15);
+    }
+
+    .mode-indicator {
+      margin-top: 0.5em;
+      font-size: 0.95em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Margin Collapse Demo + Block/Flex Toggle</h1>
+
+  <div class="info">
+    <p>
+      <span class="label">Keyboard:</span>
+      Press <code>T</code> to toggle the blue-bordered container between
+      <code>display: block</code> and <code>display: flex</code>
+      using <em>inline styles</em>.
+    </p>
+    <p class="mode-indicator" id="modeIndicator">
+      Current mode: <code>display: block</code>
+    </p>
+  </div>
+
+  <!-- This is the container whose display we toggle -->
+  <div class="toggle-target flex-helper" id="toggleContainer">
+    <h2>1. Sibling Margin Collapse</h2>
+    <p>
+      These two sibling boxes each have <code>margin: 40px 0</code>. Because they
+      are in a block formatting context, the vertical space between them is
+      <em>40px</em>, not 80px (their margins collapse).
+    </p>
+
+    <div class="sibling-demo-box">
+      Sibling box A — top and bottom margin: 40px.
+    </div>
+
+    <div class="sibling-demo-box">
+      Sibling box B — top and bottom margin: 40px.<br>
+      The gap between A and B is only 40px because of margin-collapsing.
+    </div>
+
+    <h2>2. Nested List Margin Collapse</h2>
+    <div class="list-wrapper">
+      <p>
+        This wrapped list shows how margins can collapse between
+        <code>ul</code>, <code>li</code>, and nested lists.
+      </p>
+      <ul class="outer-list">
+        <li>
+          Outer list item 1 with vertical margins.<br>
+          The nested list below has its own top margin which can collapse with this <code>li</code>.
+          <ul class="inner-list">
+            <li>Inner list item 1</li>
+            <li>Inner list item 2</li>
+          </ul>
+        </li>
+        <li>
+          Outer list item 2 with top and bottom margin.
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Change this selector if you want to target a different element
+      const selector = '#toggleContainer';
+
+      const target = document.querySelector(selector);
+      const indicator = document.getElementById('modeIndicator');
+
+      if (!target) {
+        console.warn('No element found for selector:', selector);
+        return;
+      }
+
+      // Track current mode ourselves instead of relying purely on computed style
+      let isFlex = false; // initial assumption: display: block
+
+      function updateIndicator() {
+        if (!indicator) return;
+        const mode = isFlex ? 'display: flex' : 'display: block';
+        indicator.textContent = 'Current mode: ' + mode;
+      }
+
+      function toggleDisplayMode() {
+        isFlex = !isFlex;
+
+        // Apply inline style to override any stylesheet rule
+        target.style.display = isFlex ? 'flex' : 'block';
+
+        updateIndicator();
+      }
+
+      // Initial label
+      updateIndicator();
+
+      // Keyboard handler: press "t" or "T" to toggle
+      document.addEventListener('keydown', function (event) {
+        const key = event.key || event.keyCode;
+
+        if (key === 't' || key === 'T' || key === 84) {
+          // Prevent the page from doing something else on "t"
+          event.preventDefault();
+          toggleDisplayMode();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
