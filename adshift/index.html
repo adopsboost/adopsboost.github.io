@@ -461,6 +461,7 @@ googletag.cmd.push(() => {
         const contentElement = document.querySelectorAll('.content');
         const newSection = document.createElement('section');
         newSection.className = 'section margin_collapse_test';
+        newSection.id = `content-section-${index}`;
         newSection.innerHTML = `
           <h2>Content section ${index}</h2>
           <div>
@@ -494,6 +495,7 @@ googletag.cmd.push(() => {
         const contentElement = document.querySelectorAll('.content');
         const adSection = document.createElement('section');
         adSection.className = 'ad_placement margin_collapse_test';
+        adSection.id = `ad-section-${index}`;
         adSection.innerHTML = `
             <p>This is ad unit ${index}</p>
             <div id='ad-div-${index}'>
