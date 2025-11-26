@@ -507,7 +507,7 @@ googletag.cmd.push(() => {
     }
 
     function attachGoogleTag(index) {
-        if (index > window.rebounder.adshift[0].maxAdElements) {return}
+        //if (index > window.rebounder.adshift[0].maxAdElements) {return}
         googletag.cmd.push(function() {
             googletag.defineSlot('/22304985199/adshift', [300, 250], `ad-div-${index}`).addService(googletag.pubads());
             googletag.display(`ad-div-${index}`);
