@@ -103,17 +103,27 @@
     .foot { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; padding: 20px 0 40px; color: var(--muted); font-size: 14px; }
     .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
     .ad_placement {min-height:310px;}
+        /* Sibling margin collapse demo */
+    .margin_collapse_test {
+      margin: 40px 0; /* large vertical margins to show collapse */
+      padding: 10px;
+      border: 2px solid #ffb347;
+      background: rgba(255, 179, 71, 0.08);
+    }
   </style>
   <script src="https://rebounder.adopsboost.com/adopsboost.com/start_rebounder.js"></script>
   <script>
     window.rebounder = window.rebounder || {};
-    window.rebounder.adshift = [{
-      adSelector: ".ad_placement",
-      containerSelector: ".content",
-      bufferPixels: 200,
-      maxAdElements: 4,
-      minHeight: 340
-    }];
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('adshift_off') !== 'true') {
+      window.rebounder.adshift = [{
+        adSelector: ".ad_placement",
+        containerSelector: ".content",
+        bufferPixels: 200,
+        maxAdElements: 4,
+        minHeight: 340
+      }];
+    }
     window.pbjs = window.pbjs || {
       onEvent: function() {},
       requestBids: function() {}
@@ -450,7 +460,7 @@ googletag.cmd.push(() => {
     function insertLorumIpsum(index) {
         const contentElement = document.querySelectorAll('.content');
         const newSection = document.createElement('section');
-        newSection.className = 'section';
+        newSection.className = 'section margin_collapse_test';
         newSection.innerHTML = `
           <h2>Content section ${index}</h2>
           <div>
@@ -483,7 +493,7 @@ googletag.cmd.push(() => {
     function insertAdPlacement(index) {
         const contentElement = document.querySelectorAll('.content');
         const adSection = document.createElement('section');
-        adSection.className = 'ad_placement';
+        adSection.className = 'ad_placement margin_collapse_test';
         adSection.innerHTML = `
             <p>This is ad unit ${index}</p>
             <div id='ad-div-${index}'>
