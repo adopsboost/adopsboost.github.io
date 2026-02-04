@@ -501,6 +501,9 @@ googletag.cmd.push(() => {
         const adSection = document.createElement('section');
         adSection.className = 'ad_placement margin_collapse_test';
         adSection.id = `ad-section-${index}`;
+        if (index == 1) {
+          adSection.setAttribute("data-rebounder-visibility-exception", "true")
+        }
         adSection.innerHTML = `
             <p>This is ad unit ${index}</p>
             <div id='ad-div-${index}'>
