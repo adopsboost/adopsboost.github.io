@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AdOps Boost</title>
-  <meta name="description" content="AdOps Boost adds a smart optimization layer to publisher stacks. Prebid traffic shaping, dynamic floors, viewability optimization, and more. Join the pilot." />
+  <meta name="description" content="AdOps Boost adds a smart optimization layer to publisher stacks. Managed refresh, dynamic floors, adaptive timeouts and more. Join the pilot." />
   <style>
     :root {
       --bg: #0b0c10;
@@ -91,6 +91,45 @@
     .card p { margin: 0; color: var(--muted); }
     .grid-2 { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; }
     @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
+    .section-split { display: block; }
+    .media-figure {
+      margin: 6px 0 16px 24px;
+      width: 12.5%;
+      min-width: 120px;
+      float: right;
+      position: sticky;
+      top: 96px;
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) + 4px);
+      overflow: hidden;
+      background: linear-gradient(180deg, color-mix(in oklab, var(--card), white 3%), var(--card));
+      box-shadow: var(--shadow);
+    }
+    .media-figure img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      background: linear-gradient(135deg, color-mix(in oklab, var(--brand) 35%, var(--bg-soft)), color-mix(in oklab, var(--brand-2) 28%, var(--card)));
+    }
+    .media-figure figcaption {
+      padding: 12px 14px 14px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+      border-top: 1px solid var(--border);
+      background: color-mix(in oklab, var(--surface), transparent 10%);
+    }
+    @media (max-width: 900px) {
+      .section-split { display: block; }
+      .media-figure {
+        width: 100%;
+        max-width: 360px;
+        float: none;
+        margin: 0 auto 18px;
+        position: static;
+      }
+    }
     .list { display: grid; gap: 12px; margin: 14px 0 0; }
     .list li { list-style: none; }
     .tag { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--border); font-size: 12px; color: var(--muted);
@@ -121,7 +160,7 @@
     <section class="hero">
       <div class="kicker">Optimization layer for publishers</div>
       <h1>AdOps Boost: an optimization layer for publisher ad stacks</h1>
-      <p class="lead">Rebounder learns from every auction and shapes what happens next. Prebid traffic shaping, dynamic flooring, and viewability optimization.</p>
+      <p class="lead">Rebounder learns from every auction and shapes what happens next. Managed refresh, dynamic flooring, and adaptive timeouts.</p>
       <div class="ribbon mono">By James Strang and Graeme Thompson · Made in Canada</div>
       <div style="margin-top:22px; display:flex; gap:12px; flex-wrap:wrap;">
         <a class="btn" href="#contact">Request early access</a>
@@ -133,16 +172,16 @@
       <h2>Flagship features</h2>
       <div class="cards">
         <article class="card">
-          <h3>Prebid traffic shaping</h3>
-          <p>Adapt who you invite next based on the signals you just saw. Fewer wasted calls. Better competition.</p>
+          <h3>Managed Refresh</h3>
+          <p>Advanced refresh strategies to maximize revenue without compromising user experience.</p>
         </article>
         <article class="card">
           <h3>Dynamic flooring</h3>
           <p>Floors reflect recent clearing behavior by slot and context.  Designed to help bidders be more competitive in real time.</p>
         </article>
         <article class="card">
-          <h3>Viewability optimization</h3>
-          <p>Sequence and refresh with intent. Lift revenue by making ads more likely to be seen sooner.</p>
+          <h3>Adaptive timeouts</h3>
+          <p>Set intelligent prebid timeouts based on each user's real-time behaviour and connection performance.</p>
         </article>
       </div>
     </section>
@@ -181,10 +220,21 @@
     </section>
 
     <section id="founders" class="section">
-      <h2>Built by James Strang and Graeme Thompson</h2>
-      <p>We met in 2016 at a monetization company. Graeme brought deep software expertise and a passion for clean, elegant code. James came from web development with a drive to solve hard problems and push boundaries.</p>
-      <p>We learned to work well together. Teacher and student, switching roles as needed. After that company, Graeme led software teams outside ad tech for a time. James stayed in ad tech and helped young companies grow, then moved into full-time consulting on technical problems.</p>
-      <p>Over time James saw the same pattern. Publishers were asked to fund the free web with less budget and more constraints. Industry changes made long-term bets hard. So he sketched a plan to automate the best optimization tactics he had learned. The task was bigger than one person. He called Graeme. Two months later they were testing with real publishers.</p>
+      <div class="section-split">
+        <div class="section-copy">
+          <h2>Built by James Strang and Graeme Thompson</h2>
+          <figure class="media-figure">
+            <img
+              src="images/graeme_90s.jpg"
+              alt="Graeme, pictured here on a recent trip to 1990."
+            />
+            <figcaption>Graeme, pictured here on a recent trip to 1990.</figcaption>
+          </figure>
+          <p>We met in 2016 at a monetization company. Graeme brought deep software expertise and a passion for clean, elegant code. James came from web development with a drive to solve hard problems and push boundaries.</p>
+          <p>We learned to work well together. Teacher and student, switching roles as needed. After that company, Graeme led software teams outside ad tech for a time. James stayed in ad tech and helped young companies grow, then moved into full-time consulting on technical problems.</p>
+          <p>Over time James saw the same pattern. Publishers were asked to fund the free web with less budget and more constraints. Industry changes made long-term bets hard. So he sketched a plan to automate the best optimization tactics he had learned. The task was bigger than one person. He called Graeme. Two months later they were testing with real publishers.</p>
+        </div>
+      </div>
     </section>
 
     <section id="mission" class="section">
